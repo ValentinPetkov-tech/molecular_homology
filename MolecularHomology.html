@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Creature</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        input {
+            padding: 5px;
+            margin: 5px;
+            width: 150px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Create Your Creature</h1>
+        <p>It is thought that all living organisms have arisen from a single ancestor who shared one common strand of genetic material. This is called the RNA World Hypothesis.</p>
+        <p>On a foreign planet, a microscopic organism has appeared. You will step in the shoes of Mother Nature, adding new genetic material to the common RNA sequence to create a new, unique creature.</p>
+
+        <h2>Enter your sequences:</h2>
+
+        <label for="habitat">Habitat (5-nucleotide sequence): </label>
+        <input type="text" id="habitat" maxlength="5">
+        <br>
+
+        <label for="size">Size (5-nucleotide sequence): </label>
+        <input type="text" id="size" maxlength="5">
+        <br>
+
+        <label for="diet">Diet (5-nucleotide sequence): </label>
+        <input type="text" id="diet" maxlength="5">
+        <br>
+
+        <label for="behavior">Behavior (5-nucleotide sequence): </label>
+        <input type="text" id="behavior" maxlength="5">
+        <br>
+
+        <label for="feature">Feature (5-nucleotide sequence): </label>
+        <input type="text" id="feature" maxlength="5">
+        <br>
+
+        <label for="name">Creature Name: </label>
+        <input type="text" id="name">
+        <br>
+
+        <button onclick="createCreature()">Create Creature</button>
+
+        <div class="output" id="output"></div>
+        <div class="error" id="error"></div>
+    </div>
+
+    <script>
+        function isValidRNASequence(seq) {
+            const validNucleotides = ['A', 'C', 'G', 'U'];
+            return seq.length === 5 && [...seq].every(c => validNucleotides.includes(c));
+        }
+
+        function countNucleotides(seq, nucleotide) {
+            return [...seq].filter(c => c === nucleotide).length;
+        }
+
+        function getCreatureTrait(sequence, nucleotide) {
+            return countNucleotides(sequence, nucleotide);
+        }
+
+        function createCreature() {
+            const habitatSeq = document.getElementById('habitat').value.toUpperCase();
+            const sizeSeq = document.getElementById('size').value.toUpperCase();
+            const dietSeq = document.getElementById('diet').value.toUpperCase();
+            const behaviorSeq = document.getElementById('behavior').value.toUpperCase();
+            const featureSeq = document.getElementById('feature').value.toUpperCase();
+            const creatureName = document.getElementById('name').value.trim();
+
+            const errorElem = document.getElementById('error');
+            errorElem.textContent = '';
+            document.getElementById('output').innerHTML = '';
+
+            if (!isValidRNASequence(habitatSeq) || !isValidRNASequence(sizeSeq) || !isValidRNASequence(dietSeq) || !isValidRNASequence(behaviorSeq) || !isValidRNASequence(featureSeq)) {
+                errorElem.textContent = 'Make sure all sequences are 5 nucleotides long and only contain A, C, G, or U.';
+                return;
+            }
+
+            const habitatTraits = ["polar regions", "mountains", "desert", "forest", "ocean", "hot springs"];
+            const sizeTraits = ["extremely large (+30m)", "small (1-20cm)", "medium-sized (20-100cm)", "large (1-5m)", "gigantic (5-30m)", "microscopic (0.05mm-1mm)"];
+            const dietTraits = ["a decomposer", "a herbivore", "a omnivore", "a carnivore", "a herbivore", "a decomposer"];
+            const behaviorTraits = ["living in Fission-Fusion society", "pair-bonded", "highly social", "living in small groups", "solitary", "living in cooperative social groups"];
+            const featureTraits = ["reproduces asexually", "is resistant to cold and hot weather", "is very intelligent", "has excellent vision", "is very fast", "uses echolocation"];
+
+            // Habitat trait based on 'A' count
+            const habitat = habitatTraits[countNucleotides(habitatSeq, 'A')];
+            const size = sizeTraits[countNucleotides(sizeSeq, 'C')];
+            const diet = dietTraits[countNucleotides(dietSeq, 'G')];
+            const behavior = behaviorTraits[countNucleotides(behaviorSeq, 'C')];
+            const feature = featureTraits[countNucleotides(featureSeq, 'U')];
+
+            let output = `
+                <h3>Your Creature:</h3>
+                <p>Your creature has the sequence: ACGUA${habitatSeq}${sizeSeq}${dietSeq}${behaviorSeq}${featureSeq}</p>
+                <p>Your creature inhabits the ${habitat}.</p>
+                <p>It is ${size}.</p>
+                <p>It is classified as ${diet}.</p>
+                <p>It is always ${behavior}.</p>
+                <p>One distinctive feature of your creature is that it ${feature}.</p>
+            `;
+
+            if (creatureName) {
+                output += `<p><strong>Name your creature: ${creatureName}</strong></p>`;
+            }
+
+            document.getElementById('output').innerHTML = output;
+        }
+    </script>
+
+</body>
+</html>
